@@ -1,0 +1,112 @@
+// Abstract class Payment untuk mendukung konsep Abstraction
+public abstract class Payment {
+    private String customerId;
+    private String paymentId;
+    private String paymentDate;
+    protected double amount; // protected agar bisa diakses oleh subclass
+    
+    // Konstruktor tanpa parameter
+    public Payment() {
+        this.paymentId = generateID();
+        this.paymentDate = generateDate();
+    }
+
+    // Konstruktor dengan customerId
+    public Payment(String customerId) {
+        this.customerId = customerId;
+        this.paymentId = generateID();
+        this.paymentDate = generateDate();
+    }
+
+    // Konstruktor dengan customerId dan amount
+    public Payment(String customerId, double amount) {
+        this.customerId = customerId;
+        this.amount = amount;
+        this.paymentId = generateID();
+        this.paymentDate = generateDate();
+    }
+
+    // Metode untuk menghasilkan ID pembayaran
+    public String generateID() {
+        return "1111111"; // Bisa diganti dengan UUID atau pengambilan ID dari database
+    }
+
+    // Metode untuk mendapatkan tanggal pembayaran
+    public String generateDate() {
+        return "2025-03-06"; // Bisa diubah dengan fungsi timestamp aktual
+    }
+    
+    // Metode abstrak untuk pembayaran yang harus diimplementasikan oleh subclass
+    public abstract void pay(double amount);
+
+    // Menampilkan detail pembayaran
+    public void printPaymentDetails() {
+        System.out.println("Payment ID: " + paymentId);
+        System.out.println("Payment Date: " + paymentDate);
+        System.out.println("Amount: " + amount);
+        System.out.println("Customer ID: " + customerId);
+    }
+}
+
+// Subclass PaymentPaypal
+class PaymentPaypal extends Payment {
+    private String email;
+
+    public PaymentPaypal(String customerId, double amount, String email) {
+        super(customerId, amount);
+        this.email = email;
+    }
+
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paying " + amount + " via PayPal using email " + email);
+    }
+}
+
+// Subclass PaymentCreditCard
+class PaymentCreditCard extends Payment {
+    private String cardNumber;
+    
+    public PaymentCreditCard(String customerId, double amount, String cardNumber) {
+        super(customerId, amount);
+        this.cardNumber = cardNumber;
+    }
+
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paying " + amount + " via Credit Card ending in " + cardNumber.substring(cardNumber.length() - 4));
+    }
+}
+
+// Subclass PaymentBankTransfer
+class PaymentBankTransfer extends Payment {
+    private String bankAccount;
+
+    public PaymentBankTransfer(String customerId, double amount, String bankAccount) {
+        super(customerId, amount);
+        this.bankAccount = bankAccount;
+    }
+
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paying " + amount + " via Bank Transfer to account " + bankAccount);
+    }
+}
+
+// Main Class
+public class MainApp {
+    public static void main(String[] args) {
+        PaymentPaypal payX = new PaymentPaypal("1234567890", 10000, "user@email.com");
+        Payment payY = new PaymentCreditCard("1234567890", 15000, "1234567812345678");
+        Payment payZ = new PaymentBankTransfer("1234567890", 20000, "987654321");
+
+        payX.pay(10000);
+        payY.pay(15000);
+        payZ.pay(20000);
+
+        System.out.println("\n--- Payment Details ---");
+        payX.printPaymentDetails();
+        payY.printPaymentDetails();
+        payZ.printPaymentDetails();
+    }
+}
